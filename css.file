@@ -1,0 +1,24 @@
+.starfield {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.star {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.star:hover {
+  transform: scale(1.4);
+}
+
+.star.selected {
+  box-shadow: 0 0 20px rgba(0, 200, 255, 1);
+  transform: scale(1.6);
+}
