@@ -63,6 +63,53 @@
     });
   }
 </script>
+<script>
+  let stars = [];
+
+  async function loadStars() {
+    const res = await fetch("stars.json");
+    stars = await res.json();
+    renderStarfield();
+  }
+
+  loadStars();
+</script>
+<script>
+  const container = document.getElementById("starfield");
+
+  function renderStarfield() {
+    container.innerHTML = "";
+
+    stars.forEach(star => {
+      const el = document.createElement("div");
+      el.className = "star";
+      el.style.top = star.position.top;
+      el.style.left = star.position.left;
+      el.dataset.id = star.id;
+
+      el.style.boxShadow = `0 0 ${8 + star.phi * 12}px rgba(255,255,255,0.8)`;
+
+      el.addEventListener("click", () => selectStar(star.id));
+      container.appendChild(el);
+    });
+  }
+
+  function selectStar(id) {
+    const star = stars.find(s => s.id === id);
+    if (!star) return;
+
+    document.getElementById("detail-title").textContent = star.title;
+    document.getElementById("detail-domain").textContent = star.domain;
+    document.getElementById("detail-theme").textContent = star.theme;
+    document.getElementById("detail-tags").textContent = star.tags.join(", ");
+    document.getElementById("detail-phi").textContent = star.phi.toFixed(2);
+    document.getElementById("detail-connections").textContent = star.connections.join(", ");
+
+    document.querySelectorAll(".star").forEach(el => {
+      el.classList.toggle("selected", el.dataset.id === id);
+    });
+  }
+</script>
 
     body {
       margin: 0;
