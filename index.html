@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CONSTELLATION</title>
+  <style>
+    :root {
+      --bg: #020308;
+      --bg-alt: #050712;
+      --gold: #f5d26f;
+      --gold-soft: #c9aa4f;
+      --text-main: #f5f5f5;
+      --text-soft: #b0b0c0;
+      --accent: #4f5bce;
+      --border-subtle: #262636;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #14162a 0, #020308 55%);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      background: linear-gradient(to right, #050712, #090b18);
+      border-bottom: 1px solid #181828;
+      box-shadow: 0 0 18px rgba(0,0,0,0.7);
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      position: relative;
+    }
+
+    /* Eight-pointed star */
+    .star-8 {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 18px;
+      height: 18px;
+      background: conic-gradient(from 0deg, var(--gold) 0 12.5%, transparent 12.5% 25%, var(--gold) 25% 37.5%, transparent 37.5% 50%, var(--gold) 50% 62.5%, transparent 62.5% 75%, var(--gold) 75% 87.5%, transparent 87.5% 100%);
+      -webkit-mask: radial-gradient(circle, transparent 0 35%, #000 36% 100%);
+      mask: radial-gradient(circle, transparent 0 35%, #000 36% 100%);
+      filter: drop-shadow(0 0 6px rgba(245,210,111,0.8));
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 480px;
+      margin: 0 18px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #2a2a3a;
+      background: #050712;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-bar input::placeholder {
+      color: #5f6075;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid #303046;
+      background: #070818;
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 6px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      border-color: var(--gold-soft);
+      background: radial-gradient(circle at top, #3b3214, #17120a);
+      color: var(--gold);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1.6fr) minmax(0, 1.2fr);
+      height: calc(100vh - 56px);
+    }
+
+    .panel {
+      border-right: 1px solid var(--border-subtle);
+      background: linear-gradient(to bottom, #050712, #020308);
+      padding: 12px 12px 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .panel:last-child {
+      border-right: none;
+    }
+
+    .panel-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header span {
+      font-size: 10px;
+      color: #6b6c84;
+    }
+
+    .scroll {
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid #2b2b3c;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: #c0c0d0;
+      background: #050712;
+      cursor: pointer;
+    }
+
+    .chip.gold {
+      border-color: var(--gold-soft);
+      color: var(--gold);
+      background: #15100a;
+    }
+
+    .section-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6b6c84;
+      margin: 10px 0 4px;
+    }
+
+    .idea-item {
+      padding: 8px 8px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+
+    .idea-item:hover {
+      border-color: #2f3044;
+      background: radial-gradient(circle at left, #15152a, transparent 60%);
+    }
+
+    .idea-title {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .idea-meta {
+      font-size: 11px;
+      color: #7f8097;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .idea-tag {
+      color: var(--gold-soft);
+    }
+
+    /* Center: starfield / graph */
+    .starfield {
+      position: relative;
+      flex: 1;
+      border-radius: 14px;
+      border: 1px solid #26263a;
+      background: radial-gradient(circle at center, #101225 0, #050712 40%, #020308 100%);
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .star-node {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+    }
+
+    .star-node .star-8 {
+      width: 14px;
+      height: 14px;
+      opacity: 0.9;
+    }
+
+    .star-node:hover .star-8 {
+      filter: drop-shadow(0 0 10px rgba(245,210,111,1));
+      transform: scale(1.1);
+    }
+
+    .star-label {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 10px;
+      color: #d6d6e6;
+      text-shadow: 0 0 4px #000;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mode-pill {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid #303046;
+      color: #a0a0c0;
+      cursor: pointer;
+    }
+
+    .mode-pill.active {
+      border-color: var(--gold-soft);
+      color: var(--gold);
+      background: #15100a;
+    }
+
+    /* Right: details */
+    .detail-card {
+      border-radius: 12px;
+      border: 1px solid #26263a;
+      background: radial-gradient(circle at top left, #18152a 0, #050712 45%, #020308 100%);
+      padding: 10px 10px 12px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .detail-title {
+      font-size: 14px;
+      color: var(--gold);
+    }
+
+    .detail-meta {
+      font-size: 11px;
+      color: #8f90a8;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      border: 1px solid #34344a;
+      padding: 2px 7px;
+      font-size: 10px;
+      color: #c0c0d8;
+    }
+
+    .badge.gold {
+      border-color: var(--gold-soft);
+      color: var(--gold);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      border-radius: 8px;
+      border: 1px solid #2c2c3e;
+      background: #050712;
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 6px 8px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: #6b6c84;
+    }
+
+    .math-block {
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      background: #050712;
+      border-radius: 8px;
+      border: 1px solid #2c2c3e;
+      padding: 6px 8px;
+      color: #d6d6f0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .footer-strip {
+      font-size: 10px;
+      color: #6b6c84;
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid #181828;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-strip span {
+      opacity: 0.8;
+    }
+
+    .footer-strip strong {
+      color: var(--gold-soft);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-mark">
+        <div class="star-8"></div>
+      </div>
+      CONSTELLATION
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search stars, tags, themes, domains..." />
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary">Add Star</button>
+      <button class="btn">Map</button>
+      <button class="btn">Timeline</button>
+      <button class="btn">Brainstorm</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- LEFT: GROUPING / LIST -->
+    <section class="panel">
+      <div class="panel-header">
+        GROUPING
+        <span>Domains · Themes · Tags</span>
+      </div>
+      <div class="scroll">
+        <div class="section-label">Domains</div>
+        <div class="chip-row">
+          <div class="chip gold">Mind</div>
+          <div class="chip">Heart</div>
+          <div class="chip">Work</div>
+          <div class="chip">Self</div>
+          <div class="chip">Future</div>
+        </div>
+
+        <div class="section-label">Themes (Active)</div>
+        <div class="chip-row">
+          <div class="chip gold">Self‑Alignment</div>
+          <div class="chip">Cognitive Flow</div>
+          <div class="chip">Relational Patterns</div>
+          <div class="chip">Purpose & Direction</div>
+        </div>
+
+        <div class="section-label">Tags</div>
+        <div class="chip-row">
+          <div class="chip">identity</div>
+          <div class="chip">intuition</div>
+          <div class="chip">overwhelm</div>
+          <div class="chip">focus</div>
+          <div class="chip">meaning</div>
+          <div class="chip">future‑self</div>
+          <div class="chip">relationships</div>
+        </div>
+
+        <div class="section-label">Stars in Focus</div>
+        <div>
+          <div class="idea-item">
+            <div class="idea-title">I only move when there’s meaning.</div>
+            <div class="idea-meta">
+              <span class="idea-tag">identity</span>
+              <span>Mind · Self‑Alignment</span>
+            </div>
+          </div>
+          <div class="idea-item">
+            <div class="idea-title">Overwhelm as signal, not failure.</div>
+            <div class="idea-meta">
+              <span class="idea-tag">overwhelm</span>
+              <span>Mind · Cognitive Flow</span>
+            </div>
+          </div>
+          <div class="idea-item">
+            <div class="idea-title">I act as a bridge between systems.</div>
+            <div class="idea-meta">
+              <span class="idea-tag">relationships</span>
+              <span>Self · Relational Patterns</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-strip">
+        <span>INFJ lens: <strong>On</strong></span>
+        <span>ADHD mode: <strong>Soft focus</strong></span>
+      </div>
+    </section>
+
+    <!-- CENTER: STARFIELD / MAP -->
+    <section class="panel">
+      <div class="panel-header">
+        STARFIELD
+        <span>Scalar Field · Quantum State · Matrix</span>
+      </div>
+      <div class="mode-toggle">
+        <div class="mode-pill active">Scatter</div>
+        <div class="mode-pill">Orbit</div>
+        <div class="mode-pill">Synthesis</div>
+        <div class="mode-pill">Brainstorm</div>
+      </div>
+      <div class="starfield">
+        <!-- Example stars (positions are illustrative) -->
+        <div class="star-node" style="top: 26%; left: 32%;">
+          <div class="star-8"></div>
+          <div class="star-label">Self‑Alignment</div>
+        </div>
+        <div class="star-node" style="top: 48%; left: 60%;">
+          <div class="star-8"></div>
+          <div class="star-label">Cognitive Flow</div>
+        </div>
+        <div class="star-node" style="top: 68%; left: 40%;">
+          <div class="star-8"></div>
+          <div class="star-label">Relational Bridge</div>
+        </div>
+        <div class="star-node" style="top: 36%; left: 78%;">
+          <div class="star-8"></div>
+          <div class="star-label">Future‑Self</div>
+        </div>
+        <div class="star-node" style="top: 60%; left: 18%;">
+          <div class="star-8"></div>
+          <div class="star-label">Meaning Threshold</div>
+        </div>
+      </div>
+      <div class="footer-strip">
+        <span>Φ: scalar coherence field · |ψ⟩: active cognitive state</span>
+        <span>Agents: cluster · pattern · brainstorm</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: DETAILS / MATH / REFLECTION -->
+    <section class="panel">
+      <div class="panel-header">
+        STAR DETAILS
+        <span>Selected · Connections · Reflection</span>
+      </div>
+      <div class="scroll">
+        <div class="detail-card">
+          <div class="detail-title">I only move when there’s meaning.</div>
+          <div class="detail-meta">
+            <span class="badge gold">Domain: Mind</span>
+            <span class="badge">Theme: Self‑Alignment</span>
+            <span class="badge">Tags: identity, meaning, future‑self</span>
+          </div>
+
+          <div class="section-label">Scalar Field Φ</div>
+          <div class="math-block">
+Φᵢ = 0.87   // high coherence / emotional weight
+Φ = { Φ₁, Φ₂, …, Φₙ } over active stars
+          </div>
+
+          <div class="section-label">Quantum State |ψ⟩</div>
+          <div class="math-block">
+|ψᵢ⟩ = αᵢ |cᵢ⟩ + βᵢ |eᵢ⟩ + γᵢ |mᵢ⟩
+P(relevance) = |⟨ψᵢ | Ψ_now⟩|²
+          </div>
+
+          <div class="section-label">Matrix Links M, W</div>
+          <div class="math-block">
+Mᵢⱼ = 1 if starᵢ ↔ starⱼ linked, else 0
+Wᵢⱼ = Φᵢ · Φⱼ · similarity(i, j)
+          </div>
+
+          <div class="section-label">Agent Synthesis</div>
+          <div class="math-block">
+Cluster agent:   Cₖ = { i | Σⱼ Wᵢⱼ > θₖ }
+Pattern agent:   S = f(Φ, W, |ψ⟩)
+Brainstorm agent: Φᵢ' = Φᵢ + εᵢ
+          </div>
+
+          <div class="section-label">Reflection</div>
+          <textarea placeholder="What deeper pattern is this star pointing at? How does it connect Mind · Self · Future?"></textarea>
+
+          <div class="section-label">Connected Stars</div>
+          <div class="chip-row">
+            <div class="chip gold">Meaning Threshold</div>
+            <div class="chip">Future‑Self</div>
+            <div class="chip">Cognitive Flow</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-strip">
+        <span>View: <strong>INFJ pattern</strong></span>
+        <span>Constellation · black sky · golden eight‑pointed stars</span>
+      </div>
+    </section>
+  </main>
+</body>
+  </html>
